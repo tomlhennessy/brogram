@@ -10,7 +10,7 @@ export default function WorkoutCard(props) {
 
   return (
     <div className='workout-container'>
-      <Modal showExerciseDescription={showExerciseDescription} handleCloseModal={() => {}} />
+      {/* <Modal showExerciseDescription={showExerciseDescription} handleCloseModal={() => {}} /> */}
       <div className='workout-card card'>
         <div className='plan-card-header'>
           <p>Day {dayNum}</p>
