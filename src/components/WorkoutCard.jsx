@@ -3,10 +3,19 @@ import Modal from './Modal'
 import { exerciseDescriptions } from '../utils'
 
 export default function WorkoutCard(props) {
-  const { trainingPlan, workoutIndex, type, dayNum, icon } = props
+  const { trainingPlan, workoutIndex, type, dayNum, icon, savedWeights } = props
 
   const { warmup, workout } = trainingPlan || {}
   const [showExerciseDescription, setShowExerciseDescription] = useState(null)
+  const [weights, setWeights] = useState(savedWeights || {})
+
+  function handleAddWeight(title, weight) {
+    const newObj = {
+      ...weights,
+      [title]: weight
+    }
+    setWeights(newObj)
+  }
 
   return (
     <div className='workout-container'>
@@ -77,7 +86,10 @@ export default function WorkoutCard(props) {
               </div>
               <p className='exercise-info'>{workoutExercise.sets}</p>
               <p className='exercise-info'>{workoutExercise.reps}</p>
-              <input className='weight-input' placeholder='14' />
+              <input value={weights[workoutExercise.name] || ''}
+              onChange={(e) => {
+                handleAddWeight(workoutExercise.name, e.target.value)
+              }} className='weight-input' placeholder='14' />
             </React.Fragment>
           )
         })}
