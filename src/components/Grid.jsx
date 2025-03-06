@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { workoutProgram as training_plan } from '../utils/index.js'
 import WorkoutCard from './WorkoutCard.jsx'
 
@@ -10,12 +10,33 @@ export default function Grid() {
 
   function handleSave(index, data) {
     // save to local storage and modify the saved workouts state
-
+    const newObj = {
+      ...savedWorkouts,
+      [index]: {
+        ...data,
+        isComplete: !!data.isComplete || !!savedWorkouts?.[index]?.isComplete
+      }
+    }
+    setSavedWorkouts(newObj)
+    localStorage.setItem('brogram', JSON.stringify(newObj))
+    setSelectedWorkout(null)
   }
 
   function handleComplete(index, data) {
     // complete a workout (we modify the completed status)
+    const newObj = { ...data }
+    newObj.isComplete = true
+    handleSave(index, newObj)
   }
+
+  useEffect(() => {
+    if (!localStorage) {return}
+    let savedData = {}
+    if (localStorage.getItem('brogram')) {
+      savedData = localStorage.getItem('brogram')
+    }
+    setSavedWorkouts(savedData)
+  }, [])
 
   return (
     <div className='training-plan-grid'>
@@ -40,7 +61,7 @@ export default function Grid() {
 
         if (workoutIndex === selectedWorkout) {
           return (
-            <WorkoutCard key={workoutIndex} trainingPlan={trainingPlan} type={type} workoutIndex={workoutIndex} icon={icon} dayNum={dayNum} />
+            <WorkoutCard savedWeights={savedWorkouts?.[workoutIndex]?.weights} handleSave={handleSave} handleComplete={handleComplete} key={workoutIndex} trainingPlan={trainingPlan} type={type} workoutIndex={workoutIndex} icon={icon} dayNum={dayNum} />
           )
         }
 
